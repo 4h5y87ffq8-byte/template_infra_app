@@ -8,12 +8,26 @@ on:
     branches:
       - 'feature/**'
 
-env:
-  JAVA_VERSION: '17'
-
 jobs:
+  load-java-version:
+    runs-on: ubuntu-latest
+    outputs:
+      java_version: ${{ steps.set-java-version.outputs.JAVA_VERSION }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Load envs from .a5x_devops
+        id: dotenv
+        uses: c-py/action-dotenv-to-setenv@v1
+        with:
+          path: .a5x_devops
+      - name: Set JAVA_VERSION output
+        id: set-java-version
+        run: echo "JAVA_VERSION=${JAVA_VERSION}" >> $GITHUB_OUTPUT
+
   quality-checks:
+    needs: load-java-version
     uses: a5x-reusable-workflows/.github/workflows/feature-java.yml@main
     with:
-      java-version: ${{ env.JAVA_VERSION }}
+      java-version: ${{ needs.load-java-version.outputs.java_version }}
     secrets: inherit
