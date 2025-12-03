@@ -10,7 +10,7 @@ on:
 
 jobs:
   quality-checks:
-    uses: 4h5y87ffq8-byte/a5x-reusable-workflows/.github/workflows/feature-java.yml@main
+    uses: 4h5y87ffq8-byte/demo-reusable-workflows/.github/workflows/feature-java.yml@main
     with:
       java-version: '17'
     secrets: inherit
