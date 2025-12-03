@@ -11,3 +11,4 @@ app:
     prd:
       account_id: "345678901234"
       region: "eu-central-1"
+
