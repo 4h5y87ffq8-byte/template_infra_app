@@ -9,4 +9,7 @@ deploy:
   tags:
     owner: "team-dev"
     project: "template-infra-app"
+app:
+  stack: java
+  version: "17"
 # ...adicione outros parâmetros conforme necessário...
