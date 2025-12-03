@@ -12,5 +12,3 @@ deploy:
 app:
   stack: "java"
   stack_version: "17"
-
-# ...adicione outros parâmetros conforme necessário...
