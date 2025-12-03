@@ -1,0 +1,298 @@
+name: Deploy to AWS
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+      skip_infrastructure:
+        description: 'Skip infrastructure deployment'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  AWS_REGION: us-east-1
+  JAVA_VERSION: '17'
+
+jobs:
+  validate:
+    name: Validate Deployment
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate Terraform
+      working-directory: ./infra
+      run: |
+        terraform init -backend=false
+        terraform validate
+
+  deploy-infrastructure:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-latest
+    needs: validate
+    if: ${{ !inputs.skip_infrastructure }}
+    environment: ${{ inputs.environment }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.6.0
+
+    - name: Terraform Init
+      working-directory: ./infra
+      run: terraform init
+
+    - name: Terraform Plan
+      working-directory: ./infra
+      run: |
+        terraform plan \
+          -var-file=environments/${{ inputs.environment }}.tfvars \
+          -out=tfplan
+
+    - name: Terraform Apply
+      working-directory: ./infra
+      run: terraform apply -auto-approve tfplan
+
+    - name: Save Terraform Outputs
+      working-directory: ./infra
+      run: |
+        terraform output -json > outputs.json
+        echo "ECR_REPOSITORY=$(terraform output -raw ecr_repository_url)" >> $GITHUB_ENV
+        echo "ECS_CLUSTER=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_ENV
+        echo "ECS_SERVICE=$(terraform output -raw ecs_service_name)" >> $GITHUB_ENV
+
+    - name: Upload outputs
+      uses: actions/upload-artifact@v4
+      with:
+        name: terraform-outputs
+        path: infra/outputs.json
+        retention-days: 1
+
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: [validate]
+    environment: ${{ inputs.environment }}
+    
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Set up JDK ${{ env.JAVA_VERSION }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Build application
+      working-directory: ./app
+      run: mvn clean package -DskipTests
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ steps.login-ecr.outputs.registry }}/template-app
+        tags: |
+          type=sha,prefix=${{ inputs.environment }}-
+          type=raw,value=${{ inputs.environment }}-latest
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./app
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy-application:
+    name: Deploy Application to ECS
+    runs-on: ubuntu-latest
+    needs: [deploy-infrastructure, build-and-push]
+    if: ${{ always() && (needs.deploy-infrastructure.result == 'success' || needs.deploy-infrastructure.result == 'skipped') && needs.build-and-push.result == 'success' }}
+    environment: ${{ inputs.environment }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Download Terraform outputs
+      if: ${{ !inputs.skip_infrastructure }}
+      uses: actions/download-artifact@v4
+      with:
+        name: terraform-outputs
+        path: ./infra
+
+    - name: Get ECS details
+      id: ecs-details
+      run: |
+        if [ -f "./infra/outputs.json" ]; then
+          echo "ECS_CLUSTER=$(jq -r '.ecs_cluster_name.value' ./infra/outputs.json)" >> $GITHUB_ENV
+          echo "ECS_SERVICE=$(jq -r '.ecs_service_name.value' ./infra/outputs.json)" >> $GITHUB_ENV
+        else
+          echo "ECS_CLUSTER=template-app-${{ inputs.environment }}" >> $GITHUB_ENV
+          echo "ECS_SERVICE=template-app-service-${{ inputs.environment }}" >> $GITHUB_ENV
+        fi
+
+    - name: Force new ECS deployment
+      run: |
+        aws ecs update-service \
+          --cluster ${{ env.ECS_CLUSTER }} \
+          --service ${{ env.ECS_SERVICE }} \
+          --force-new-deployment
+
+    - name: Wait for service stability
+      run: |
+        aws ecs wait services-stable \
+          --cluster ${{ env.ECS_CLUSTER }} \
+          --services ${{ env.ECS_SERVICE }}
+
+  smoke-tests:
+    name: Run Smoke Tests
+    runs-on: ubuntu-latest
+    needs: deploy-application
+    environment: ${{ inputs.environment }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Get application URL
+      id: get-url
+      run: |
+        # Get ALB DNS from Terraform outputs or use environment variable
+        APP_URL="${{ secrets.APP_URL }}"
+        echo "APP_URL=$APP_URL" >> $GITHUB_ENV
+
+    - name: Health check
+      run: |
+        max_attempts=10
+        attempt=0
+        until [ $attempt -ge $max_attempts ]
+        do
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.APP_URL }}/actuator/health)
+          if [ $response -eq 200 ]; then
+            echo "Health check passed!"
+            exit 0
+          fi
+          attempt=$((attempt+1))
+          echo "Attempt $attempt/$max_attempts failed. Retrying in 30s..."
+          sleep 30
+        done
+        echo "Health check failed after $max_attempts attempts"
+        exit 1
+
+    - name: API smoke test
+      run: |
+        # Test GET messages endpoint
+        curl -f ${{ env.APP_URL }}/api/messages || exit 1
+        echo "Smoke tests passed!"
+
+  notify:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [deploy-infrastructure, build-and-push, deploy-application, smoke-tests]
+    if: always()
+    
+    steps:
+    - name: Determine deployment status
+      id: status
+      run: |
+        if [ "${{ needs.smoke-tests.result }}" == "success" ]; then
+          echo "status=success" >> $GITHUB_OUTPUT
+          echo "color=#36a64f" >> $GITHUB_OUTPUT
+          echo "message=Deployment to ${{ inputs.environment }} completed successfully!" >> $GITHUB_OUTPUT
+        else
+          echo "status=failure" >> $GITHUB_OUTPUT
+          echo "color=#ff0000" >> $GITHUB_OUTPUT
+          echo "message=Deployment to ${{ inputs.environment }} failed!" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Send Slack notification
+      if: always()
+      uses: slackapi/slack-github-action@v1
+      with:
+        payload: |
+          {
+            "text": "${{ steps.status.outputs.message }}",
+            "attachments": [
+              {
+                "color": "${{ steps.status.outputs.color }}",
+                "fields": [
+                  {
+                    "title": "Environment",
+                    "value": "${{ inputs.environment }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Status",
+                    "value": "${{ steps.status.outputs.status }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Triggered by",
+                    "value": "${{ github.actor }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "${{ github.ref_name }}",
+                    "short": true
+                  }
+                ]
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      continue-on-error: true

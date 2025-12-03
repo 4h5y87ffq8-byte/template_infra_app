@@ -1,0 +1,12 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Template Application,com.example.templateapp.dto,MessageRequest,131,36,30,0,0,6,19,8,4,8
+Template Application,com.example.templateapp.dto,MessageResponse,259,43,54,0,2,8,38,8,11,8
+Template Application,com.example.templateapp.dto,MessageResponse.MessageResponseBuilder,16,49,0,0,0,1,1,8,1,8
+Template Application,com.example.templateapp.service,MessageService,156,4,2,0,39,1,10,1,9,1
+Template Application,com.example.templateapp.exception,GlobalExceptionHandler,66,58,0,0,12,15,2,3,2,3
+Template Application,com.example.templateapp.exception,ResourceNotFoundException,4,0,0,0,2,0,1,0,1,0
+Template Application,com.example.templateapp.model,Message,298,0,54,0,9,0,45,0,18,0
+Template Application,com.example.templateapp.config,OpenAPIConfig,33,0,0,0,9,0,2,0,2,0
+Template Application,com.example.templateapp,TemplateApplication,5,3,0,0,2,1,1,1,1,1
+Template Application,com.example.templateapp.controller,MessageController,0,47,0,0,0,11,0,6,0,6
+Template Application,com.example.templateapp.controller,HealthController,47,0,0,0,11,0,3,0,3,0

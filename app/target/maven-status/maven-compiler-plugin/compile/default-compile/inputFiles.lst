@@ -1,0 +1,11 @@
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\exception\GlobalExceptionHandler.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\dto\MessageRequest.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\exception\ResourceNotFoundException.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\config\OpenAPIConfig.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\repository\MessageRepository.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\TemplateApplication.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\controller\HealthController.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\controller\MessageController.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\model\Message.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\dto\MessageResponse.java
+C:\dev\GITHUB\template_infra_app\app\src\main\java\com\example\templateapp\service\MessageService.java

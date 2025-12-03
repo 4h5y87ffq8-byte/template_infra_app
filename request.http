@@ -1,0 +1,4 @@
+
+
+# Listar todas as mensagens
+GET http://localhost:8080/api/messages

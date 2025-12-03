@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Pre-commit hook to ensure code quality
+
+set -e
+
+echo "Running pre-commit checks..."
+
+# Check if we're in the right directory
+if [ ! -f "pom.xml" ] && [ -d "app" ]; then
+    cd app
+fi
+
+# Run Maven validate
+echo "→ Running Maven validate..."
+mvn validate -q || {
+    echo "❌ Maven validation failed"
+    exit 1
+}
+
+# Run tests
+echo "→ Running tests..."
+mvn test -q || {
+    echo "❌ Tests failed"
+    exit 1
+}
+
+# Check code formatting (if spotless is configured)
+echo "→ Checking code formatting..."
+mvn spotless:check -q 2>/dev/null || {
+    echo "⚠️  Code formatting issues detected. Run 'mvn spotless:apply' to fix."
+    # Don't fail on formatting issues, just warn
+}
+
+echo "✅ Pre-commit checks passed!"
+exit 0
