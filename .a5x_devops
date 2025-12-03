@@ -1,6 +1,8 @@
 app:
-  stack: "java"
-  stack_version: "17"
+  build:
+    stack: "java"
+    stack_version: "17"
+    working-directory: "./app"
   deploy:
     dev:
       account_id: "123456789012"
