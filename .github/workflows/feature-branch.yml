@@ -10,25 +10,10 @@ on:
 
 env:
   JAVA_VERSION: '17'
-  MAVEN_OPTS: -Xmx3072m
 
 jobs:
   quality-checks:
-    name: Maven Quality Checks
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-          cache: 'maven'
-
-      - name: Run Maven quality checks
-        working-directory: ./app
-        run: |
-          mvn --batch-mode clean verify checkstyle:check pmd:check org.owasp:dependency-check-maven:check -T 1C -Dmaven.test.failure.ignore=false -DskipITs
+    uses: a5x-reusable-workflows/.github/workflows/feature-java.yml@main
+    with:
+      java-version: ${{ env.JAVA_VERSION }}
+    secrets: inherit

@@ -1,0 +1,12 @@
+stack: template-app-stack
+stack_version: "1.0.0"
+deploy:
+  account_id: "123456789012"
+  region: "us-east-1"
+  resource: "ecs"
+  environment: "dev"
+  bucket: "template-app-artifacts"
+  tags:
+    owner: "team-dev"
+    project: "template-infra-app"
+# ...adicione outros parâmetros conforme necessário...
