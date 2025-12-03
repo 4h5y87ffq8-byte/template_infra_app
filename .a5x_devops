@@ -1,15 +1,14 @@
-stack: template-app-stack
-stack_version: "1.0.0"
-deploy:
-  account_id: "123456789012"
-  region: "us-east-1"
-  resource: "ecs"
-  environment: "dev"
-  bucket: "template-app-artifacts"
-  tags:
-    owner: "team-dev"
-    project: "template-infra-app"
 app:
   stack: "java"
   stack_version: "17"
-  
+  deploy:
+    dev:
+      account_id: "123456789012"
+      region: "us-east-1"
+    cer:
+      account_id: "210987654321"
+      region: "us-west-2"
+    prd:
+      account_id: "345678901234"
+      region: "eu-central-1"
+      
