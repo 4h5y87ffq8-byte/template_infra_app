@@ -1,4 +1,4 @@
-name: Feature Branch Quality Checks
+name: Feature Branch
 
 on:
   push:
@@ -10,5 +10,6 @@ on:
 
 jobs:
   workflow-java-feature:
+    name: 🚀 Java Feature Workflow
     uses: 4h5y87ffq8-byte/demo-reusable-workflows/.github/workflows/feature-java.yml@main
     secrets: inherit
