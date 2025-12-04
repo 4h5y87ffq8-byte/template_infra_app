@@ -1,4 +1,4 @@
-app:
+a5x_devops:
   build:
     stack: "java"
     stack_version: "17"
