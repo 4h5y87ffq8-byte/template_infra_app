@@ -9,6 +9,6 @@ on:
       - 'feature/**'
 
 jobs:
-  quality-checks:
+  workflow-java-feature:
     uses: 4h5y87ffq8-byte/demo-reusable-workflows/.github/workflows/feature-java.yml@main
     secrets: inherit
