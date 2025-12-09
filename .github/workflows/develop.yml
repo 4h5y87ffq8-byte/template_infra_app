@@ -1,0 +1,12 @@
+name: Develop
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  workflow-java-develop:
+    name: 🚀 Java Develop Workflow
+    uses: 4h5y87ffq8-byte/demo-reusable-workflows/.github/workflows/develop-java.yml@main
+    secrets: inherit
