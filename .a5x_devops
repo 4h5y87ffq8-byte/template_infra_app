@@ -4,12 +4,22 @@ a5x_devops:
     stack_version: "17"
     working-directory: "./app"
   deploy:
+    image_name: "template_infra_app"
+    repository: "template_infra_app"
+    ecs:
+      task_definition_file: "infra/ecs/task-definition-dev.json"
+      service_name: "template-infra-app-service"
+      cluster_name: "template-infra-app-cluster"
+      container_name: "template_infra_app"
     dev:
       account_id: "123456789012"
       region: "us-east-1"
+      task_definition_file: "infra/ecs/task-definition-dev.json"
     cer:
       account_id: "210987654321"
       region: "us-west-2"
+      task_definition_file: "infra/ecs/task-definition-cer.json"
     prd:
       account_id: "345678901234"
       region: "eu-central-1"
+      task_definition_file: "infra/ecs/task-definition-prd.json"
