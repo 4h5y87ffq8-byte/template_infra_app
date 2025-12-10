@@ -3,10 +3,10 @@ name: Feature Branch
 on:
   push:
     branches:
-      - 'feature/**'
+      - "feature/**"
   pull_request:
     branches:
-      - 'feature/**'
+      - "feature/**"
 
 jobs:
   workflow-java-feature:
