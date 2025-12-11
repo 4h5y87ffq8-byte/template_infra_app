@@ -1,0 +1,42 @@
+{
+    "family": "template-infra-app-cer",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "1024",
+    "executionRoleArn": "arn:aws:iam::210987654321:role/ecsTaskExecutionRole",
+    "taskRoleArn": "arn:aws:iam::210987654321:role/ecsTaskRole",
+    "containerDefinitions": [
+        {
+            "name": "template_infra_app",
+            "image": "210987654321.dkr.ecr.us-west-2.amazonaws.com/template_infra_app:latest",
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/template-infra-app-cer",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "environment": [
+                {
+                    "name": "SPRING_PROFILES_ACTIVE",
+                    "value": "cer"
+                },
+                {
+                    "name": "ENV",
+                    "value": "certification"
+                }
+            ]
+        }
+    ]
+}
