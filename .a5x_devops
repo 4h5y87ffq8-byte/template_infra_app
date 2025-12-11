@@ -24,4 +24,3 @@ a5x_devops:
       region: "eu-central-1"
       task_definition_file: "infra/ecs/task-definition-prd.json"
 
-      
