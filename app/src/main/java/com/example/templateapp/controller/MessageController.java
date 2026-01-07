@@ -3,6 +3,7 @@ package com.example.templateapp.controller;
 import com.example.templateapp.dto.MessageRequest;
 import com.example.templateapp.dto.MessageResponse;
 import com.example.templateapp.service.MessageService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Messages", description = "Message management API")
 public class MessageController {
 
+  @SuppressFBWarnings(
+      value = "EI_EXPOSE_REP2",
+      justification = "MessageService is a Spring-managed bean with controlled lifecycle")
   private final MessageService messageService;
 
   @GetMapping
