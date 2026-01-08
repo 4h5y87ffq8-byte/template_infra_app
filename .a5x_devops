@@ -11,6 +11,10 @@ a5x_devops:
       service_name: "template-infra-app-service"
       cluster_name: "template-infra-app-cluster"
       container_name: "template_infra_app"
+    eks:
+      namespace: "template-infra-app-namespace"
+      manifests_folder: "infra/k8s"
+      helm_chart_folder: "infra/charts"
     dev:
       account_id: "123456789012"
       region: "us-east-1"
