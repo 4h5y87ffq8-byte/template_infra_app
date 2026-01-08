@@ -25,4 +25,3 @@ a5x_devops:
       account_id: "345678901234"
       region: "eu-central-1"
       task_definition_file: "infra/ecs/task-definition-prd.json"
-
