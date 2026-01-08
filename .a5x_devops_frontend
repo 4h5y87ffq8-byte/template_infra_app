@@ -1,11 +1,9 @@
 a5x_devops:
   build:
-    stack: "java"
-    stack_version: "17"
+    stack: "node"
+    stack_version: "20"
     working-directory: "./app"
   deploy:
-    image_name: "template_infra_app"
-    repository: "template_infra_app"
     ecs:
       task_definition_file: "infra/ecs/task-definition-dev.json"
       service_name: "template-infra-app-service"
@@ -27,3 +25,4 @@ a5x_devops:
       account_id: "345678901234"
       region: "eu-central-1"
       task_definition_file: "infra/ecs/task-definition-prd.json"
+
