@@ -3,7 +3,6 @@ a5x_devops:
     stack: "java"
     stack_version: "17"
     working-directory: "./app"
-  
   deploy:
     image_name: "template_infra_app"
     repository: "template_infra_app"
@@ -47,4 +46,3 @@ a5x_devops:
       private_subnet_ids: "subnet-prd001,subnet-prd002,subnet-prd003"
       desired_count: 3
       destroy: false
-
