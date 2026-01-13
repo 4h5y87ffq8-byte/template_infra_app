@@ -46,3 +46,4 @@ a5x_devops:
       private_subnet_ids: "subnet-prd001,subnet-prd002,subnet-prd003"
       desired_count: 3
       destroy: false
+
