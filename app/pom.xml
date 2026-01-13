@@ -132,219 +132,189 @@
             <type>maven-plugin</type>
         </dependency>
 
-        <!-- Dependência vulnerável para testar OWASP Dependency Check -->
-        <!-- Log4j com CVE-2021-44228 (Log4Shell) -->
+        <!-- Remova ou atualize para versão segura -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.14.1</version>
+            <version>2.20.0</version> <!-- Versão segura -->
         </dependency>
     </dependencies>
 
     <build>
-    <finalName>${project.artifactId}</finalName>
-    <plugins>
-    <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-            <excludes>
-                <exclude>
-                    <groupId>org.projectlombok</groupId>
-                    <artifactId>lombok</artifactId>
-                </exclude>
-            </excludes>
-        </configuration>
-    </plugin>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
 
-    <!-- Maven Compiler Plugin -->
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-            <source>17</source>
-            <target>17</target>
-        </configuration>
-    </plugin>
+            <!-- Maven Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
 
-    <!-- Surefire Plugin for Tests -->
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0</version>
-    </plugin>
+            <!-- Surefire Plugin for Tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
 
-    <!-- JaCoCo for Code Coverage -->
-    <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.11</version>
-        <executions>
-            <execution>
-                <goals>
-                    <goal>prepare-agent</goal>
-                </goals>
-            </execution>
-            <execution>
-                <id>report</id>
-                <phase>test</phase>
-                <goals>
-                    <goal>report</goal>
-                </goals>
-            </execution>
-        </executions>
-    </plugin>
+            <!-- JaCoCo for Code Coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-    <!-- Spotless for Code Formatting -->
-    <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.43.0</version>
-        <configuration>
-            <java>
-                <googleJavaFormat>
-                    <version>1.19.2</version>
-                    <style>GOOGLE</style>
-                </googleJavaFormat>
-                <removeUnusedImports />
-                <trimTrailingWhitespace />
-                <endWithNewline />
-            </java>
-        </configuration>
-        <executions>
-            <execution>
-                <goals>
-                    <goal>check</goal>
-                </goals>
-                <phase>verify</phase>
-            </execution>
-        </executions>
-    </plugin>
+            <!-- Spotless for Code Formatting -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.43.0</version>
+                <configuration>
+                    <java>
+                        <googleJavaFormat>
+                            <version>1.19.2</version>
+                            <style>GOOGLE</style>
+                        </googleJavaFormat>
+                        <removeUnusedImports />
+                        <trimTrailingWhitespace />
+                        <endWithNewline />
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
 
-    <!-- Checkstyle for Code Style Checks -->
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.3.1</version>
-        <dependencies>
-            <dependency>
-                <groupId>com.puppycrawl.tools</groupId>
-                <artifactId>checkstyle</artifactId>
-                <version>${checkstyle.version}</version>
-            </dependency>
-        </dependencies>
-        <configuration>
-            <configLocation>google_checks.xml</configLocation>
-            <consoleOutput>true</consoleOutput>
-            <failOnViolation>false</failOnViolation>
-            <failsOnError>false</failsOnError>
-            <violationSeverity>warning</violationSeverity>
-            <outputFile>${project.build.directory}/checkstyle-result.xml</outputFile>
-        </configuration>
-        <executions>
-            <execution>
-                <id>checkstyle</id>
-                <phase>verify</phase>
-                <goals>
-                    <goal>check</goal>
-                </goals>
-            </execution>
-        </executions>
-    </plugin>
+            <!-- Checkstyle for Code Style Checks -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.3.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>google_checks.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failOnViolation>false</failOnViolation>
+                    <failsOnError>false</failsOnError>
+                    <violationSeverity>warning</violationSeverity>
+                    <outputFile>${project.build.directory}/checkstyle-result.xml</outputFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>checkstyle</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-    <!-- PMD for Code Quality Analysis -->
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.21.2</version>
-        <dependencies>
-            <dependency>
-                <groupId>net.sourceforge.pmd</groupId>
-                <artifactId>pmd-core</artifactId>
-                <version>${pmd.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.pmd</groupId>
-                <artifactId>pmd-java</artifactId>
-                <version>${pmd.version}</version>
-            </dependency>
-        </dependencies>
-        <configuration>
-            <targetJdk>${java.version}</targetJdk>
-            <failOnViolation>false</failOnViolation>
-            <printFailingErrors>true</printFailingErrors>
-            <linkXRef>false</linkXRef>
-            <outputDirectory>${project.build.directory}</outputDirectory>
-            <format>xml</format>
-        </configuration>
-        <executions>
-            <execution>
-                <id>pmd-check</id>
-                <phase>verify</phase>
-                <goals>
-                    <goal>check</goal>
-                </goals>
-            </execution>
-        </executions>
-    </plugin>
+            <!-- PMD for Code Quality Analysis -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.21.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-core</artifactId>
+                        <version>${pmd.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-java</artifactId>
+                        <version>${pmd.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <targetJdk>${java.version}</targetJdk>
+                    <failOnViolation>false</failOnViolation>
+                    <printFailingErrors>true</printFailingErrors>
+                    <linkXRef>false</linkXRef>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <format>xml</format>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pmd-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-    <!-- SpotBugs for Bug Detection -->
-    <plugin>
-    <groupId>com.github.spotbugs</groupId>
-    <artifactId>spotbugs-maven-plugin</artifactId>
-    <version>${spotbugs.version}</version>
-    <configuration>
-    <effort>Max</effort>
-    <threshold>Low</threshold>
-
-
-</project>    <!-- ...existing code... -->
-</build>
-</plugins>
-</plugin>
-</configuration>
-<format>JSON</format>
-<format>HTML</format>                    <!-- Gerar relatório HTML -->
-<failOnError>true</failOnError>                    <!-- Ou especificar por severidade -->
-<failBuildOnCVSS>7</failBuildOnCVSS>                    <!-- Falha apenas para severidade CRITICAL ou HIGH -->
-<configuration>
-    <version>8.4.0</version>
-    <artifactId>dependency-check-maven</artifactId>
-    <groupId>org.owasp</groupId>
-    <plugin> </plugin>
-    </executions>
-    </execution>
-    </goals>
-    <goal>check</goal>
-    <goals>
-    <phase>verify</phase>
-    <id>spotbugs</id>
-    <execution>
-    <executions>
-</configuration>
-<htmlOutput>true</htmlOutput>
-<xmlOutput>true</xmlOutput>
-<outputDirectory>${project.build.directory}/spotbugs</outputDirectory>
-<failOnError>false</failOnError>
-<xmlOutput>true</xmlOutput>
-<outputDirectory>${project.build.directory}</outputDirectory>
-</configuration>
-<executions>
-    <execution>
-        <id>spotbugs-check</id>
-        <phase>verify</phase>
-        <goals>
-            <goal>check</goal>
-        </goals>
-    </execution>
-</executions>
-</plugin>
-</plugins>
-</build>
-<scm>
-    <connection>scm:git:https://github.com/seu-usuario/seu-repositorio.git</connection>
-    <developerConnection>scm:git:https://github.com/seu-usuario/seu-repositorio.git</developerConnection>
-    <url>https://github.com/seu-usuario/seu-repositorio</url>
-    <tag>release-1.0.0</tag>
-</scm>
+            <!-- SpotBugs for Bug Detection -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.version}</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Low</threshold>
+                    <failOnError>false</failOnError>
+                    <xmlOutput>true</xmlOutput>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotbugs-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <scm>
+        <connection>scm:git:https://github.com/seu-usuario/seu-repositorio.git</connection>
+        <developerConnection>scm:git:https://github.com/seu-usuario/seu-repositorio.git</developerConnection>
+        <url>https://github.com/seu-usuario/seu-repositorio</url>
+        <tag>release-1.0.0</tag>
+    </scm>
 </project>
