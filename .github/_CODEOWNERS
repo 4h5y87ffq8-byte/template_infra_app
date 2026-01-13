@@ -1,0 +1,17 @@
+# Padrão global - qualquer mudança precisa de aprovação do time de platform
+* @your-org/platform-team
+
+# Arquivos de infraestrutura específicos
+/infra/** @your-org/devops-team @your-org/platform-team
+
+# Workflows do GitHub Actions
+/.github/workflows/** @your-org/devops-team
+
+# Configuração do projeto
+.a5x_devops @your-org/platform-team
+
+# Código da aplicação
+/app/** @your-org/backend-team
+
+# Arquivos de configuração do Terraform
+/infra/ecs/terraform/** @your-org/devops-team
