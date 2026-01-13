@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -122,12 +124,19 @@
             <version>1.19.3</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
             <version>3.2.0</version>
             <type>maven-plugin</type>
+        </dependency>
+
+        <!-- Remova ou atualize para versão segura -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.14.1</version> <!-- VULNERÁVEL! -->
         </dependency>
     </dependencies>
 
@@ -300,6 +309,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- OWASP Plugin removido - executado via CLI nos workflows -->
         </plugins>
     </build>
     <scm>
