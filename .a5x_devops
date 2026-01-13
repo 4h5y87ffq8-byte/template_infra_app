@@ -6,20 +6,43 @@ a5x_devops:
   deploy:
     image_name: "template_infra_app"
     repository: "template_infra_app"
+    platform: "linux/amd64,linux/arm64"
     ecs:
-      task_definition_file: "infra/ecs/task-definition-dev.json"
       service_name: "template-infra-app-service"
       cluster_name: "template-infra-app-cluster"
       container_name: "template_infra_app"
+      cpu: "256"
+      memory: "512"
+      port: 8080
+      log_retention_days: 7
+    terraform:
+      version: "1.6.0"
+      working_directory: "infra/ecs/terraform"
+      task_definition_directory: "infra/ecs/task-definition"
+      backend_bucket: "terraform-state-bucket"
+      backend_key_prefix: "template-infra-app"
+      backend_region: "us-east-1"
     dev:
       account_id: "123456789012"
       region: "us-east-1"
-      task_definition_file: "infra/ecs/task-definition-dev.json"
+      environment: "dev"
+      vpc_id: "vpc-dev123"
+      private_subnet_ids: "subnet-dev001,subnet-dev002"
+      desired_count: 1
+      destroy: true
     cer:
       account_id: "210987654321"
       region: "us-west-2"
-      task_definition_file: "infra/ecs/task-definition-cer.json"
+      environment: "cer"
+      vpc_id: "vpc-cer456"
+      private_subnet_ids: "subnet-cer001,subnet-cer002"
+      desired_count: 2
+      destroy: false
     prd:
       account_id: "345678901234"
       region: "eu-central-1"
-      task_definition_file: "infra/ecs/task-definition-prd.json"
+      environment: "prd"
+      vpc_id: "vpc-prd789"
+      private_subnet_ids: "subnet-prd001,subnet-prd002,subnet-prd003"
+      desired_count: 3
+      destroy: false
