@@ -309,8 +309,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- OWASP Plugin removido - executado via CLI nos workflows -->
         </plugins>
     </build>
     <scm>
