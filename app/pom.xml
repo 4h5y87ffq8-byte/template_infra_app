@@ -310,41 +310,7 @@
                 </executions>
             </plugin>
 
-            <!-- OWASP Dependency Check for Security Vulnerabilities -->
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>9.0.9</version>
-                <configuration>
-                    <!-- Falha o build se encontrar CVSS >= 7 (HIGH ou CRITICAL) -->
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
-                    
-                    <!-- Formatos de relatório -->
-                    <formats>
-                        <format>HTML</format>
-                        <format>JSON</format>
-                        <format>XML</format>
-                    </formats>
-                    
-                    <!-- Diretório de saída dos relatórios -->
-                    <outputDirectory>${project.build.directory}/dependency-check</outputDirectory>
-                    
-                    <!-- Ativa análise de dependências transitivas -->
-                    <skipTestScope>false</skipTestScope>
-                    
-                    <!-- Configurações de análise -->
-                    <assemblyAnalyzerEnabled>true</assemblyAnalyzerEnabled>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>owasp-check</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!-- OWASP Plugin removido - executado via CLI nos workflows -->
         </plugins>
     </build>
     <scm>
