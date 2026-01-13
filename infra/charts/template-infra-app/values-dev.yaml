@@ -1,0 +1,29 @@
+# Development environment values
+replicaCount: 1
+
+image:
+  repository: 123456789012.dkr.ecr.us-east-1.amazonaws.com/template_infra_app
+  tag: "dev-latest"
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: "dev"
+
+ingress:
+  enabled: true
+  hosts:
+    - host: template-app-dev.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
